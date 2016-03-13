@@ -19,6 +19,12 @@ Itinerary.prototype.addRestaurant = function(rest) {
 	this.refreshDetils();
 }
 
+Itinerary.prototype.removeHotel = function(hotel) {
+	this.hotel = "";
+	this.refreshDetils();
+}
+
+
 Itinerary.prototype.addToNav = function() {
 	     //  <li>
       //   <a href='/'>
@@ -37,6 +43,13 @@ Itinerary.prototype.refreshDetils=function(){
 	console.log(completeString);
 	 completeString+='</div>';
 	$('#detailholder').append(completeString);
+
+	$(".removeHotel").on('click', function() {
+		//console.log("removing hotel");
+		var $item = $(this).parent();
+		itineraries[dayIndex].removeHotel($item);
+		//console.log($item);
+	});
 }
 
 Itinerary.prototype.renderHotel = function(day) {
@@ -44,26 +57,34 @@ Itinerary.prototype.renderHotel = function(day) {
 		<h3>My Hotel</h3>
 				<div class="panel-body">
 					`+this.hotel+`
+				<span class="glyphicon glyphicon-remove-circle removeHotel" style="color: red; cursor: pointer" data-day=`+startDay+`></span>
 				</div>
 	</div>`;
 	return srting;
 }
 Itinerary.prototype.renderActivities = function(day) {
 	var srting=`<div class="panel-body">
-		<h3>My Activities</h3>
-				<div class="panel-body">
-					`+this.activities+`
-				</div>
-	</div>`;
+		<h3>My Activities</h3>`;
+		for(var i=0; i<this.activities.length; i++) {
+				srting += `<div class="panel-body">
+					`+this.activities[i]+`
+				<span class="glyphicon glyphicon-remove-circle removeActivity" style="color: red; cursor: pointer" data-day=`+startDay+` data-index=`+i+`></span>
+				</div>`;
+		}
+	srting += `</div>`;
 	return srting;
 }
 Itinerary.prototype.renderRestaurants = function(day) {
 	var srting=`<div class="panel-body">
-		<h3>My Restaurants</h3>
-				<div class="panel-body">
-					`+this.rest+`
-				</div>
-	</div>`;
+		<h3>My Restaurants</h3>`;
+		for (var i=0; i<this.rest.length; i++) {
+				srting += `<div class="panel-body">
+					`+this.rest[i]+`
+				<span class="glyphicon glyphicon-remove-circle removeRestaurant" style="color: red; cursor: pointer" data-day=`+startDay+` data-index=`+i+`></span>
+				</div>`;		
+		}
+
+	srting += `</div>`;
 	return srting;
 }
 
@@ -98,7 +119,9 @@ $(document).ready(function() {
 		}	
 		console.log(itineraries);
 		//console.log($(this).parent().parent().children().children("select").css("color", "red").val());
-	})
+	});
+
+
 
 	$(".addDay").on('click', function() {
 		createNewItinerary();
